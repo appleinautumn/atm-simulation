@@ -45,8 +45,16 @@ const transfer = async (destination, amount) => {
 };
 
 const withdraw = async (amount) => {
-  console.log(amount);
-};
+  try {
+    if (!isNumber(amount)) {
+      throw new Error('The amount is not a number');
+    }
+
+    const balance = await service.withdraw(Number(amount));
+    console.log(`You withdraw $${amount}. Your balance is $${balance}`);
+  } catch (e) {
+    console.error(`Error: ${e.message}`);
+  }};
 
 module.exports = {
   deposit,
