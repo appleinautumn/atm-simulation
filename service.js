@@ -1,9 +1,9 @@
-const { loadAccounts, saveAccounts } = require("./db");
-const { clearSession, loadSession, saveSession } = require("./session");
+const { loadAccounts, saveAccounts } = require('./db');
+const { clearSession, loadSession, saveSession } = require('./session');
 // const { createAccount } = require("./model");
 
-const accountDatabase = "accounts.json";
-const sessionDatabase = "session.json";
+const accountDatabase = 'accounts.json';
+const sessionDatabase = 'session.json';
 
 const logout = async () => {
   // get current session
@@ -69,7 +69,7 @@ const getAccountById = async (id) => {
   // load the database
   const accounts = await loadAccounts();
 
-  return accounts[id] ? {name: id, balance: accounts[id]} : null;
+  return accounts[id] ? { name: id, balance: accounts[id] } : null;
 
   // console.log("accounts", accounts, ", id", id, ", accounts[id]", accounts[id]);
   // console.log(typeof accounts[id]);
