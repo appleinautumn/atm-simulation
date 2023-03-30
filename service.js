@@ -1,9 +1,6 @@
 const { loadAccounts, saveAccounts } = require('./db');
 const { clearSession, loadSession, saveSession } = require('./session');
 
-const accountDatabase = 'accounts.json';
-const sessionDatabase = 'session.json';
-
 /**
  * Logout an account.
  * @returns {string} - The account that is logged out.
@@ -84,7 +81,8 @@ const getAccountById = async (id) => {
   // load the database
   const accounts = await loadAccounts();
 
-  if (typeof accounts[id] === 'undefined') { // check for undefined because we have to watch out for falsy value "0"
+  if (typeof accounts[id] === 'undefined') {
+    // check for undefined because we have to watch out for falsy value "0"
     return null;
   }
 
@@ -94,7 +92,47 @@ const getAccountById = async (id) => {
   };
 };
 
+/**
+ * Deposit money to currently active account.
+ * @param {number} amount - The amount of money to deposit.
+ * @returns {number} money - The final amount of money.
+ */
+const deposit = async (amount) => {
+  // get current session
+  const accountId = await loadSession();
+  if (!accountId) {
+    throw new Error('You need to login.');
+  }
+
+  // load the database
+  const accounts = await loadAccounts();
+
+  if (typeof accounts[accountId] === 'undefined') {
+    throw new Error('The account does not exist.');
+  }
+
+  // set the final amount
+  const finalAmount = accounts[accountId] + amount;
+
+  // create a new account
+  const updatedAccount = {
+    [accountId]: finalAmount,
+  };
+
+  // merge with existing data
+  const newData = {
+    ...accounts,
+    ...updatedAccount,
+  };
+
+  // save
+  await saveAccounts(newData);
+
+  return finalAmount;
+};
+
 module.exports = {
   login,
   logout,
+  deposit,
 };
