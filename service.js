@@ -114,7 +114,7 @@ const deposit = async (amount) => {
   // set the final amount
   const finalAmount = accounts[accountId] + amount;
 
-  // create a new account
+  // update the account
   const updatedAccount = {
     [accountId]: finalAmount,
   };
@@ -131,8 +131,57 @@ const deposit = async (amount) => {
   return finalAmount;
 };
 
+/**
+ * Transfer money to specific account from currently active account.
+ * @param {string} destinationId - The destination account ID.
+ * @param {number} amount - The amount of money to transfer.
+ * @returns {number} money - The final amount of the origin account.
+ */
+const transfer = async (destinationId, amount) => {
+  // get current session
+  const accountId = await loadSession();
+  if (!accountId) {
+    throw new Error('You need to login.');
+  }
+
+  // load the database
+  const accounts = await loadAccounts();
+
+  if (typeof accounts[accountId] === 'undefined') {
+    throw new Error('The origin account does not exist.');
+  }
+
+  if (typeof accounts[destinationId] === 'undefined') {
+    throw new Error('The destination account does not exist.');
+  }
+
+  // calculate origin final amount
+  const originFinalAmount = accounts[accountId] - amount;
+
+  // calculate destination final amount
+  const destinationFinalAmount = accounts[destinationId] + amount;
+
+  // update the respective accounts
+  const updatedAccounts = {
+    [accountId]: originFinalAmount,
+    [destinationId]: destinationFinalAmount,
+  };
+
+  // merge with existing data
+  const newData = {
+    ...accounts,
+    ...updatedAccounts,
+  };
+
+  // save
+  await saveAccounts(newData);
+
+  return originFinalAmount;
+};
+
 module.exports = {
   login,
   logout,
   deposit,
+  transfer,
 };
