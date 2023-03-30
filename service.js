@@ -179,7 +179,6 @@ const transfer = async (destinationId, amount) => {
   return originFinalAmount;
 };
 
-
 /**
  * Withdraw money from currently active account.
  * @param {number} amount - The amount of money to withdraw.
