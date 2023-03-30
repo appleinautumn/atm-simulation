@@ -14,7 +14,7 @@ const logout = async () => {
   const currentSession = await service.logout();
 
   if (currentSession) {
-    console.log(`User ${currentSession} has been logged out.`);
+    console.log(`Goodbye, ${currentSession}`);
   }
 };
 
