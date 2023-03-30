@@ -1,10 +1,13 @@
 const { loadAccounts, saveAccounts } = require('./db');
 const { clearSession, loadSession, saveSession } = require('./session');
-// const { createAccount } = require("./model");
 
 const accountDatabase = 'accounts.json';
 const sessionDatabase = 'session.json';
 
+/**
+ * Logout an account.
+ * @returns {string} - The account that is logged out.
+ */
 const logout = async () => {
   // get current session
   const currentSession = await loadSession();
@@ -15,43 +18,52 @@ const logout = async () => {
   return currentSession;
 };
 
-const login = async (accountName) => {
-  try {
-    // check current session
-    const currentSession = await loadSession();
+/**
+ * Login an account.
+ * @throws an error if current session exists.
+ * @param {string} accountId - The account ID.
+ * @returns {object} - The account object.
+ */
+const login = async (accountId) => {
+  // check current session
+  const currentSession = await loadSession();
 
-    // throw error if current session is active
-    if (currentSession) {
-      throw new Error(`Account ${currentSession} is currently logged in.`);
-    }
+  // throw error if current session is active
+  if (currentSession) {
+    throw new Error(`Account ${currentSession} is currently logged in.`);
+  }
 
-    // get account from the database
-    const account = await getAccountById(accountName);
-    console.log({ account });
+  // get account from the database
+  const account = await getAccountById(accountId);
 
-    // save current session
-    // await saveSession(accountName);
+  // save current session
+  await saveSession(accountId);
 
-    // if the account doesn't exist, create a new account
-    if (!account) {
-      let newAccount = await createNewAccount(accounts, accountName);
-      return newAccount;
-    }
+  // if the account doesn't exist, create a new account
+  if (!account) {
+    await createNewAccount(accountId);
 
     return {
-      name: accountName,
-      balance: accounts[accountName],
+      name: accountId,
+      balance: 0,
     };
-  } catch (e) {
-    console.error(`Error: ${e.message}`);
   }
+
+  return account;
 };
 
-const createNewAccount = async (accounts, accountName) => {
+/**
+ * Create a new account in the database.
+ * @param {string} accountId - The account ID.
+ */
+const createNewAccount = async (accountId) => {
   // create a new account
   const newAccount = {
-    [accountName]: 0,
+    [accountId]: 0,
   };
+
+  // load all accounts from database
+  const accounts = await loadAccounts();
 
   // merge with existing data
   const newData = {
@@ -61,26 +73,25 @@ const createNewAccount = async (accounts, accountName) => {
 
   // save
   await saveAccounts(newData);
-
-  return newAccount;
 };
 
+/**
+ * Get an account from the database.
+ * @param {string} id - The account ID.
+ * @returns {object} - The account object. null if not exist.
+ */
 const getAccountById = async (id) => {
   // load the database
   const accounts = await loadAccounts();
 
-  return accounts[id] ? { name: id, balance: accounts[id] } : null;
+  if (typeof accounts[id] === 'undefined') { // check for undefined because we have to watch out for falsy value "0"
+    return null;
+  }
 
-  // console.log("accounts", accounts, ", id", id, ", accounts[id]", accounts[id]);
-  // console.log(typeof accounts[id]);
-
-  // // if the account doesn't exist
-  // if (typeof accounts[id] === "undefined") {
-  //   return {
-  //     name: id,
-  //     balance: accounts[id],
-  //   };
-  // }
+  return {
+    name: id,
+    balance: accounts[id],
+  };
 };
 
 module.exports = {
