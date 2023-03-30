@@ -1,8 +1,12 @@
 const service = require('./service');
 
 const login = async (accountName) => {
-  const account = await service.login(accountName);
-  console.log(`Hello ${account.name}. Your balance is ${account.balance}.`);
+  try {
+    const account = await service.login(accountName);
+    console.log(`Hello ${account.name}. Your balance is ${account.balance}.`);
+  } catch (e) {
+    console.error(`Error: ${e.message}`);
+  }
 };
 
 const logout = async () => {
