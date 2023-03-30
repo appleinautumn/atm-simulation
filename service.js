@@ -179,9 +179,50 @@ const transfer = async (destinationId, amount) => {
   return originFinalAmount;
 };
 
+
+/**
+ * Withdraw money from currently active account.
+ * @param {number} amount - The amount of money to withdraw.
+ * @returns {number} money - The final amount of money.
+ */
+const withdraw = async (amount) => {
+  // get current session
+  const accountId = await loadSession();
+  if (!accountId) {
+    throw new Error('You need to login.');
+  }
+
+  // load the database
+  const accounts = await loadAccounts();
+
+  if (typeof accounts[accountId] === 'undefined') {
+    throw new Error('The account does not exist.');
+  }
+
+  // set the final amount
+  const finalAmount = accounts[accountId] - amount;
+
+  // update the account
+  const updatedAccount = {
+    [accountId]: finalAmount,
+  };
+
+  // merge with existing data
+  const newData = {
+    ...accounts,
+    ...updatedAccount,
+  };
+
+  // save
+  await saveAccounts(newData);
+
+  return finalAmount;
+};
+
 module.exports = {
   login,
   logout,
   deposit,
   transfer,
+  withdraw,
 };
