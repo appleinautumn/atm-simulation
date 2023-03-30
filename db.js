@@ -17,17 +17,6 @@ const saveAccounts = async (data) => {
   await fs.promises.writeFile(accountDatabase, dataJSON);
 };
 
-// const saveAccountByName = (accounts, name, balance) => {
-//   for (const account in accounts) {
-//     if (account.name == name) {
-//       account.balance = balance;
-//       break;
-//     }
-//   }
-
-//   fs.promises.writeFile(accountDatabase, accounts);
-// };
-
 module.exports = {
   loadAccounts,
   saveAccounts,
