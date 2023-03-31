@@ -54,7 +54,8 @@ const withdraw = async (amount) => {
     console.log(`You withdraw $${amount}. Your balance is $${balance}`);
   } catch (e) {
     console.error(`Error: ${e.message}`);
-  }};
+  }
+};
 
 module.exports = {
   deposit,
