@@ -1,5 +1,6 @@
 const { loadAccounts, saveAccounts } = require('./db');
 const { clearSession, loadSession, saveSession } = require('./session');
+const { isNumber } = require('./util');
 
 /**
  * Logout an account.
@@ -98,6 +99,12 @@ const getAccountById = async (id) => {
  * @returns {number} money - The final amount of money.
  */
 const deposit = async (amount) => {
+  const amountToDeposit = Number(amount);
+
+  if (!isNumber(amountToDeposit)) {
+    throw new Error('The amount is not a number');
+  }
+
   // get current session
   const accountId = await loadSession();
   if (!accountId) {
@@ -112,7 +119,7 @@ const deposit = async (amount) => {
   }
 
   // set the final amount
-  const finalAmount = accounts[accountId] + amount;
+  const finalAmount = accounts[accountId] + amountToDeposit;
 
   // update the account
   const updatedAccount = {
@@ -138,10 +145,21 @@ const deposit = async (amount) => {
  * @returns {number} money - The final amount of the origin account.
  */
 const transfer = async (destinationId, amount) => {
+  const amountToTransfer = Number(amount);
+
+  if (!isNumber(amountToTransfer)) {
+    throw new Error('The amount is not a number');
+  }
+
   // get current session
   const accountId = await loadSession();
   if (!accountId) {
     throw new Error('You need to login.');
+  }
+
+  // cannot transfer to yourself
+  if (accountId === destinationId) {
+    throw new Error('You cannot transfer to yourself.');
   }
 
   // load the database
@@ -156,10 +174,10 @@ const transfer = async (destinationId, amount) => {
   }
 
   // calculate origin final amount
-  const originFinalAmount = accounts[accountId] - amount;
+  const originFinalAmount = accounts[accountId] - amountToTransfer;
 
   // calculate destination final amount
-  const destinationFinalAmount = accounts[destinationId] + amount;
+  const destinationFinalAmount = accounts[destinationId] + amountToTransfer;
 
   // update the respective accounts
   const updatedAccounts = {
@@ -185,6 +203,12 @@ const transfer = async (destinationId, amount) => {
  * @returns {number} money - The final amount of money.
  */
 const withdraw = async (amount) => {
+  const amountToWithdraw = Number(amount);
+
+  if (!isNumber(amountToWithdraw)) {
+    throw new Error('The amount is not a number');
+  }
+
   // get current session
   const accountId = await loadSession();
   if (!accountId) {
@@ -199,7 +223,7 @@ const withdraw = async (amount) => {
   }
 
   // set the final amount
-  const finalAmount = accounts[accountId] - amount;
+  const finalAmount = accounts[accountId] - amountToWithdraw;
 
   // update the account
   const updatedAccount = {

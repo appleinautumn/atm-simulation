@@ -20,11 +20,7 @@ const logout = async () => {
 
 const deposit = async (amount) => {
   try {
-    if (!isNumber(amount)) {
-      throw new Error('The amount is not a number');
-    }
-
-    const balance = await service.deposit(Number(amount));
+    const balance = await service.deposit(amount);
     console.log(`Your balance is $${balance}`);
   } catch (e) {
     console.error(`Error: ${e.message}`);
@@ -33,12 +29,10 @@ const deposit = async (amount) => {
 
 const transfer = async (destination, amount) => {
   try {
-    if (!isNumber(amount)) {
-      throw new Error('The amount is not a number');
-    }
-
-    const balance = await service.transfer(destination, Number(amount));
-    console.log(`Transferred $${amount} to ${destination}. Your balance is $${balance}`);
+    const balance = await service.transfer(destination, amount);
+    console.log(
+      `Transferred $${amount} to ${destination}. Your balance is $${balance}`
+    );
   } catch (e) {
     console.error(`Error: ${e.message}`);
   }
@@ -46,11 +40,7 @@ const transfer = async (destination, amount) => {
 
 const withdraw = async (amount) => {
   try {
-    if (!isNumber(amount)) {
-      throw new Error('The amount is not a number');
-    }
-
-    const balance = await service.withdraw(Number(amount));
+    const balance = await service.withdraw(amount);
     console.log(`You withdraw $${amount}. Your balance is $${balance}`);
   } catch (e) {
     console.error(`Error: ${e.message}`);
