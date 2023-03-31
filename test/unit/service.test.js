@@ -63,6 +63,18 @@ describe('Service Unit Test', async () => {
     await expect(deposit(Number(100))).to.be.rejected;
   });
 
+  it('throws an error when making a deposit with an invalid amount', async () => {
+    // existing data
+    await saveAccounts({
+      boss: 1000,
+    });
+
+    // boss login
+    await login('boss');
+
+    await expect(deposit('asdf')).to.be.rejected;
+  });
+
   it('transfer', async () => {
     // existing data
     await saveAccounts({
@@ -98,6 +110,31 @@ describe('Service Unit Test', async () => {
     await expect(transfer('john', Number(100))).to.be.rejected;
   });
 
+  it('throws an error when making a transfer with an invalid amount', async () => {
+    // existing data
+    await saveAccounts({
+      boss: 1000,
+      employee1: 100,
+    });
+
+    // boss login
+    await login('boss');
+
+    await expect(transfer('employee1', 'asdf')).to.be.rejected;
+  });
+
+  it('throws an error when making a transfer to the same account', async () => {
+    // existing data
+    await saveAccounts({
+      boss: 1000,
+    });
+
+    // boss login
+    await login('boss');
+
+    await expect(transfer('boss', 100)).to.be.rejected;
+  });
+
   it('withdraw', async () => {
     // existing data
     await saveAccounts({
@@ -116,5 +153,17 @@ describe('Service Unit Test', async () => {
 
   it('throws an error when making a withdrawal without login', async () => {
     await expect(withdraw(Number(100))).to.be.rejected;
+  });
+
+  it('throws an error when making a withdrawal with an invalid amount', async () => {
+    // existing data
+    await saveAccounts({
+      boss: 1000,
+    });
+
+    // boss login
+    await login('boss');
+
+    await expect(withdraw('asdf')).to.be.rejected;
   });
 });
