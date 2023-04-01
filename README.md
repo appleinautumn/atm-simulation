@@ -32,7 +32,7 @@ This project is developed with:
 - Makes a deposit for the current active session.
 - Throws an error if the amount is not a number.
 - Throws an error if the current active session is empty.
-- Throws an error if the account does not exist. (For some reason after you login, the account data is lost in the database).
+- Throws an error if the account does not exist. (For some reason after you login, the account data is missing in the database).
 
 ### Transfer
 
