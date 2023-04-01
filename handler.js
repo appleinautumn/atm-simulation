@@ -21,7 +21,7 @@ const logout = async () => {
 const deposit = async (amount) => {
   try {
     const balance = await service.deposit(amount);
-    console.log(`Your balance is $${moneyFormatter(balance)}`);
+    console.log(`Your balance is ${moneyFormatter(balance)}`);
   } catch (e) {
     console.error(`Error: ${e.message}`);
   }
@@ -31,7 +31,7 @@ const transfer = async (destination, amount) => {
   try {
     const balance = await service.transfer(destination, amount);
     console.log(
-      `Transferred $${amount} to ${destination}. Your balance is $${moneyFormatter(balance)}`,
+      `Transferred $${amount} to ${destination}. Your balance is ${moneyFormatter(balance)}`,
     );
   } catch (e) {
     console.error(`Error: ${e.message}`);
@@ -41,7 +41,7 @@ const transfer = async (destination, amount) => {
 const withdraw = async (amount) => {
   try {
     const balance = await service.withdraw(amount);
-    console.log(`You withdraw $${amount}. Your balance is $${moneyFormatter(balance)}`);
+    console.log(`You withdraw $${amount}. Your balance is ${moneyFormatter(balance)}`);
   } catch (e) {
     console.error(`Error: ${e.message}`);
   }
