@@ -31,7 +31,7 @@ const transfer = async (destination, amount) => {
   try {
     const balance = await service.transfer(destination, amount);
     console.log(
-      `Transferred $${amount} to ${destination}. Your balance is $${balance}`
+      `Transferred $${amount} to ${destination}. Your balance is $${balance}`,
     );
   } catch (e) {
     console.error(`Error: ${e.message}`);

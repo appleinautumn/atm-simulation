@@ -32,15 +32,15 @@ This project is developed with:
 - Makes a deposit for the current active session.
 - Throws an error if the amount is not a number.
 - Throws an error if the current active session is empty.
-- Throws an error if the account does not exist. (Defensive programming. For some reason after you login, the account data is lost in the database).
+- Throws an error if the account does not exist. (For some reason after you login, the account data is lost in the database).
 
 ### Transfer
 
 - Makes a transfer from the current active session to the destination account.
 - Throws an error if the amount is not a number.
 - Throws an error if the current active session is empty.
-- Throws an error if the original account does not exist (Defensive programming. For some reason after you login, the original account is missing in the database).
-- Throws an error if the destination account does not exist (Defensive programming. For some reason after you login, the destination account is missing in the database).
+- Throws an error if the original account does not exist (For some reason after you login, the original account is missing in the database).
+- Throws an error if the destination account does not exist (For some reason after you login, the destination account is missing in the database).
 - Throws an error if the destination account is the same with the current session (You cannot transfer to yourself).
 - Here I make a change with the Transfer function. In the original problem statement, we have "debt" feature. For the purpose of this test let's just keep it simple. If Bob has $30 and transfers $100 to Alice, Bob's balance in the bank will be -$70 and Alice will get +$100 from Bob. So Bob owes money to the bank, not Alice.
 

@@ -16,7 +16,7 @@ const main = async () => {
   // initialize session
   await initSession(sessionDatabase);
 
-  program.name('dkatalis-atm').description('ATM simulation').version('0.8.0');
+  program.name('dkatalis-atm').description('ATM simulation').version('1.0.0');
 
   program
     .command('login')
