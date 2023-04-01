@@ -40,7 +40,7 @@ This project is developed with:
 - Throws an error if the amount is not a number.
 - Throws an error if the current active session is empty.
 - Throws an error if the original account does not exist (For some reason after you login, the original account is missing in the database).
-- Throws an error if the destination account does not exist (For some reason after you login, the destination account is missing in the database).
+- Throws an error if the destination account does not exist (If the destination account is missing in the database).
 - Throws an error if the destination account is the same with the current session (You cannot transfer to yourself).
 - Here I make a change with the Transfer function. In the original problem statement, we have "debt" feature. For the purpose of this test let's just keep it simple. If Bob has $30 and transfers $100 to Alice, Bob's balance in the bank will be -$70 and Alice will get +$100 from Bob. So Bob owes money to the bank, not Alice.
 
@@ -56,34 +56,35 @@ This project is developed with:
 
 ```bash
 $ node app login Alice
-Hello Alice. Your balance is 0.
-$ node app deposit 100
-Your balance is $100
+Hello Alice. Your balance is $0.
+$ node app deposit 200
+Your balance is $200
+$ node app withdraw 100
+You withdraw $100. Your balance is $100
 $ node app login Bob
 Error: Account Alice is currently logged in.
 $ node app logout
 Goodbye, Alice
 $ node app login Bob
-Hello Bob. Your balance is 0.
+Hello Bob. Your balance is $0.
 $ node app deposit 80
 Your balance is $80
 $ node app transfer Alice 50
 Transferred $50 to Alice. Your balance is $30
 $ node app transfer Alice 100
-Transferred $100 to Alice. Your balance is $-70
+Transferred $100 to Alice. Your balance is -$70
 $ node app deposit 30
-Your balance is $-40
+Your balance is -$40
 $ node app logout
 Goodbye, Bob
 $ node app login Alice
-Hello Alice. Your balance is 250.
+Hello Alice. Your balance is $250.
 $ node app transfer Bob 30
 Transferred $30 to Bob. Your balance is $220
 $ node app logout
 Goodbye, Alice
-(failed reverse-i-search)`login Bob': node app ^Cgin aa
 $ node app login Bob
-Hello Bob. Your balance is -10.
+Hello Bob. Your balance is -$10.
 $ node app deposit 100
 Your balance is $90
 $ node app logout
@@ -139,6 +140,17 @@ $ npm test
     ✔ null should be false
     ✔ undefined should be false
 
+  Test moneyFormatter
+    ✔ zero
+    ✔ positive number
+    ✔ negative number
+    ✔ string to throw error
+    ✔ array to throw error
+    ✔ object to throw error
+    ✔ null to throw error
+    ✔ undefined to throw error
 
-  23 passing (50ms)
+
+  31 passing (43ms)
+
 ```
