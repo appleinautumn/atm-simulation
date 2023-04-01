@@ -1,7 +1,7 @@
 const chai = require('chai');
 
 const { expect } = chai;
-const { isNumber } = require('../../util');
+const { isNumber, moneyFormatter } = require('../../util');
 
 describe('Test isNumber', async () => {
   const tests = [
@@ -62,6 +62,64 @@ describe('Test isNumber', async () => {
     it(t.name, async () => {
       const res = isNumber(t.val);
       expect(res).to.equal(t.expected);
+    });
+  }
+});
+
+describe('Test moneyFormatter', async () => {
+  // valid input
+  const tests = [
+    {
+      name: 'zero',
+      val: 0,
+      expected: '$0',
+    },
+    {
+      name: 'positive number',
+      val: 800,
+      expected: '$800',
+    },
+    {
+      name: 'negative number',
+      val: -100,
+      expected: '-$100',
+    },
+  ];
+
+  for (const t of tests) {
+    it(t.name, async () => {
+      const res = moneyFormatter(t.val);
+      expect(res).to.equal(t.expected);
+    });
+  }
+
+  // invalid input
+  const testErrors = [
+    {
+      name: 'string',
+      val: 'abc',
+    },
+    {
+      name: 'array',
+      val: [],
+    },
+    {
+      name: 'object',
+      val: {},
+    },
+    {
+      name: 'null',
+      val: null,
+    },
+    {
+      name: 'undefined',
+      val: undefined,
+    },
+  ];
+
+  for (const t of testErrors) {
+    it(`${t.name} to throw error`, async () => {
+      expect(() => moneyFormatter(t.val)).to.throw();
     });
   }
 });
