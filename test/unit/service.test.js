@@ -2,7 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 
 const { deposit, login, logout, transfer, withdraw } = require('../../service');
-const { initDatabase, saveAccounts } = require('../../db');
+const { initDatabase, loadLoanAccounts, saveAccounts, saveLoans } = require('../../db');
 const { clearSession, initSession, saveSession } = require('../../session');
 
 chai.use(chaiAsPromised);
@@ -10,11 +10,12 @@ const { expect } = chai;
 
 const accountDatabase = 'accounts_test.json';
 const sessionDatabase = 'session_test.json';
+const loanDatabase = 'loans_test.json';
 
 describe('Service Unit Test', async () => {
   beforeEach(async () => {
     // initialize database
-    await initDatabase(accountDatabase);
+    await initDatabase(accountDatabase, loanDatabase);
 
     // initialize session
     await initSession(sessionDatabase);
@@ -84,6 +85,11 @@ describe('Service Unit Test', async () => {
       wife: 5000,
     });
 
+    // existing loans
+    await saveLoans({
+      boss: 0,
+    });
+
     // boss login
     await login('boss');
 
@@ -102,8 +108,14 @@ describe('Service Unit Test', async () => {
     // boss transfer money to wife
     balance = await transfer('wife', Number(1000));
 
-    // expecting final amount to be -400 (600-1000)
-    expect(balance).to.equal(-400);
+    // expecting final amount to be -400 (600-1000) so it's 0
+    expect(balance).to.equal(0);
+
+    // load existing loans
+    const loanAccounts = await loadLoanAccounts();
+
+    // expecting loan amounts to be 400
+    expect(loanAccounts['boss']).to.equal(400);
   });
 
   it('throws an error when making a transfer without login', async () => {
