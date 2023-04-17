@@ -1,4 +1,4 @@
-const { loadAccounts, saveAccounts } = require('./db');
+const { loadAccounts, loadLoanAccounts, saveAccounts, saveLoans } = require('./db');
 const { clearSession, loadSession, saveSession } = require('./session');
 const { isNumber } = require('./util');
 
@@ -144,6 +144,66 @@ const deposit = async (amount) => {
  * @param {number} amount - The amount of money to transfer.
  * @returns {number} money - The final amount of the origin account.
  */
+// const transfer = async (destinationId, amount) => {
+//   const amountToTransfer = Number(amount);
+
+//   if (!isNumber(amountToTransfer)) {
+//     throw new Error('The amount is not a number');
+//   }
+
+//   // get current session
+//   const accountId = await loadSession();
+//   if (!accountId) {
+//     throw new Error('You need to login.');
+//   }
+
+//   // cannot transfer to yourself
+//   if (accountId === destinationId) {
+//     throw new Error('You cannot transfer to yourself.');
+//   }
+
+//   // load the database
+//   const accounts = await loadAccounts();
+
+//   if (typeof accounts[accountId] === 'undefined') {
+//     throw new Error('The origin account does not exist.');
+//   }
+
+//   if (typeof accounts[destinationId] === 'undefined') {
+//     throw new Error('The destination account does not exist.');
+//   }
+
+//   // calculate origin final amount
+//   const originFinalAmount = accounts[accountId] - amountToTransfer;
+
+//   // calculate destination final amount
+//   const destinationFinalAmount = accounts[destinationId] + amountToTransfer;
+
+//   // update the respective accounts
+//   const updatedAccounts = {
+//     [accountId]: originFinalAmount,
+//     [destinationId]: destinationFinalAmount,
+//   };
+
+//   // merge with existing data
+//   const newData = {
+//     ...accounts,
+//     ...updatedAccounts,
+//   };
+
+//   // save
+//   await saveAccounts(newData);
+
+//   return originFinalAmount;
+// };
+
+/**
+ * Transfer money to specific account from currently active account.
+ * Add to loans if the account goes below 0.
+ * @param {string} destinationId - The destination account ID.
+ * @param {number} amount - The amount of money to transfer.
+ * @returns {number} money - The final amount of the origin account.
+ */
 const transfer = async (destinationId, amount) => {
   const amountToTransfer = Number(amount);
 
@@ -165,6 +225,9 @@ const transfer = async (destinationId, amount) => {
   // load the database
   const accounts = await loadAccounts();
 
+  // load loan accounts
+  const loanAccounts = await loadLoanAccounts();
+
   if (typeof accounts[accountId] === 'undefined') {
     throw new Error('The origin account does not exist.');
   }
@@ -174,7 +237,17 @@ const transfer = async (destinationId, amount) => {
   }
 
   // calculate origin final amount
-  const originFinalAmount = accounts[accountId] - amountToTransfer;
+  let originFinalAmount = accounts[accountId] - amountToTransfer;
+  let originLoanAmount;
+  let originFinalLoanAmount;
+  let existingLoan;
+
+  if (originFinalAmount < 0) {
+    existingLoan = loanAccounts[accountId] ?? 0;
+    originLoanAmount = Math.abs(originFinalAmount);
+    originFinalLoanAmount = existingLoan + originLoanAmount;
+    originFinalAmount = 0;
+  }
 
   // calculate destination final amount
   const destinationFinalAmount = accounts[destinationId] + amountToTransfer;
@@ -185,14 +258,26 @@ const transfer = async (destinationId, amount) => {
     [destinationId]: destinationFinalAmount,
   };
 
+  // update the respective loan accounts
+  const updatedLoanAccounts = {
+    [accountId]: originFinalLoanAmount,
+  };
+
   // merge with existing data
   const newData = {
     ...accounts,
     ...updatedAccounts,
   };
 
+  // merge with existing loans
+  const newLoanData = {
+    ...loanAccounts,
+    ...updatedLoanAccounts,
+  };
+
   // save
   await saveAccounts(newData);
+  await saveLoans(newLoanData);
 
   return originFinalAmount;
 };
