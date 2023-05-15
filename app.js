@@ -7,12 +7,11 @@ const { getSession, initSession } = require('./session');
 const program = new Command();
 
 const accountDatabase = 'accounts.json';
-const loanDatabase = 'loans.json';
 const sessionDatabase = 'session.json';
 
 const main = async () => {
   // initialize database
-  await initDatabase(accountDatabase, loanDatabase);
+  await initDatabase(accountDatabase);
 
   // initialize session
   await initSession(sessionDatabase);
