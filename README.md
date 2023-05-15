@@ -1,6 +1,6 @@
-# ATM simulation microservice
+# ATM Simulation Microservice
 
-This is a Command Line Interface (CLI) program to simulate an interaction of an ATM with a retail bank.
+This is a Command Line Interface (CLI) program to simulate an interaction of an ATM with a user.
 
 ## Requirements
 
@@ -10,11 +10,11 @@ This project is developed with:
 
 ## Services
 
-- `login [name]` - Logs in as this customer and creates the customer if not exist
-- `deposit [amount]` - Deposits this amount to the logged in customer
-- `withdraw [amount]` - Withdraws this amount from the logged in customer
-- `transfer [target] [amount]` - Transfers this amount from the logged in customer to the target customer
-- `logout` - Logs out of the current customer
+- `login [name]` - Log in the customer and create the customer if not exist
+- `deposit [amount]` - Deposit this amount to the logged in customer
+- `withdraw [amount]` - Withdraw this amount from the logged in customer
+- `transfer [target] [amount]` - Transfer this amount from the logged in customer to the target customer
+- `logout` - Log out the logged in customer
 
 ### Login
 
