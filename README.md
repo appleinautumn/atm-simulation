@@ -25,32 +25,29 @@ This project is developed with:
 ### Logout
 
 - Logout the current active session.
-- No error if it's done multiple times.
 
 ### Deposit
 
-- Makes a deposit for the current active session.
-- Throws an error if the amount is not a number.
-- Throws an error if the current active session is empty.
-- Throws an error if the account does not exist. (For some reason after you login, the account data is missing in the database).
+- Make a deposit for the current active session.
+- Throw an error if the amount is not a number.
+- Throw an error if the current active session is empty.
+- Throw an error if the account does not exist. (For some reason after you login, the account data is missing in the database).
 
 ### Transfer
 
-- Makes a transfer from the current active session to the destination account.
-- Throws an error if the amount is not a number.
-- Throws an error if the current active session is empty.
-- Throws an error if the original account does not exist (For some reason after you login, the original account is missing in the database).
-- Throws an error if the destination account does not exist (If the destination account is missing in the database).
-- Throws an error if the destination account is the same with the current session (You cannot transfer to yourself).
-- Here I make a change with the Transfer function. In the original problem statement, we have "debt" feature. For the purpose of this test let's just keep it simple. If Bob has $30 and transfers $100 to Alice, Bob's balance in the bank will be -$70 and Alice will get +$100 from Bob. So Bob owes money to the bank, not Alice.
+- Make a transfer from the current active session to the destination account.
+- Throw an error if the amount is not a number.
+- Throw an error if the current active session is empty.
+- Throw an error if the original account does not exist (For some reason after you login, the original account is missing in the database).
+- Throw an error if the destination account does not exist (If the destination account is missing in the database).
+- Throw an error if the destination account is the same with the current session (You cannot transfer to yourself).
 
 ### Withdraw
 
-- Makes a withdrawal for the current active session.
-- Throws an error if the amount is not a number.
-- Throws an error if the current active session is empty.
-- Throws an error if the account does not exist. (Defensive programming. For some reason after you login, the account data is lost in the database).
-- To be in line with "transfer" method, we allow negative balance.
+- Make a withdrawal for the current active session.
+- Throw an error if the amount is not a number.
+- Throw an error if the current active session is empty.
+- Throw an error if the account does not exist. (For some reason after you login, the account data is lost in the database).
 
 ## Example
 
@@ -67,33 +64,27 @@ $ node app logout
 Goodbye, Alice
 $ node app login Bob
 Hello Bob. Your balance is $0.
-$ node app deposit 80
-Your balance is $80
+$ node app deposit 200
+Your balance is $200
 $ node app transfer Alice 50
-Transferred $50 to Alice. Your balance is $30
-$ node app transfer Alice 100
-Transferred $100 to Alice. Your balance is -$70
-$ node app deposit 30
-Your balance is -$40
+Transferred $50 to Alice. Your balance is $150
+$ node app transfer Alice 1000
+Error: Your account has not enough balance.
 $ node app logout
 Goodbye, Bob
 $ node app login Alice
-Hello Alice. Your balance is $250.
-$ node app transfer Bob 30
-Transferred $30 to Bob. Your balance is $220
+Hello Alice. Your balance is $150.
+$ node app transfer Alice 100
+Error: You cannot transfer to yourself.
+$ node app transfer Bob 100
+Transferred $100 to Bob. Your balance is $50
 $ node app logout
 Goodbye, Alice
-$ node app login Bob
-Hello Bob. Your balance is -$10.
-$ node app deposit 100
-Your balance is $90
-$ node app logout
-Goodbye, Bob
 ```
 
 ## Database
 
-We're simulating bank account database in the file `accounts.json`. For the session, `session.json`. When running the test, we're using `accounts_test.json` and `session_test.json` instead.
+We're simulating bank account data in the file `accounts.json`. For the session, `session.json`. When running the test, we're using `accounts_test.json` and `session_test.json` instead.
 
 ## Testing
 
